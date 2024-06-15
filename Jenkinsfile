@@ -20,14 +20,14 @@ pipeline {
             }
         }
         // SonarQube SAST Code Analysis
-        stage("SonarQube SAST Analysis"){
-            steps{
-                withSonarQubeEnv('Sonar-Server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=app-payment-service \
-                    -Dsonar.projectKey=app-payment-service '''
-                }
-            }
-        }
+        // stage("SonarQube SAST Analysis"){
+        //     steps{
+        //         withSonarQubeEnv('Sonar-Server') {
+        //             sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=app-payment-service \
+        //             -Dsonar.projectKey=app-payment-service '''
+        //         }
+        //     }
+        // }
         // Providing Snyk Access
         stage('Authenticate & Authorize Snyk') {
             steps {
@@ -59,15 +59,15 @@ pipeline {
             }
         }
         // Push Service Image to DockerHub
-        stage('Push Microservice Docker Image') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'DockerHub-Credential', toolName: 'docker') {
-                        sh "docker push awanmbandi/paymentservice:latest "
-                    }
-                }
-            }
-        }
+        // stage('Push Microservice Docker Image') {
+        //     steps {
+        //         script {
+        //             withDockerRegistry(credentialsId: 'DockerHub-Credential', toolName: 'docker') {
+        //                 sh "docker push awanmbandi/paymentservice:latest "
+        //             }
+        //         }
+        //     }
+        // }
         // // Deploy to The Staging/Test Environment
         // stage('Deploy Microservice To The Stage/Test Env'){
         //     steps{
@@ -102,7 +102,7 @@ pipeline {
     post {
     always {
         echo 'Slack Notifications.'
-        slackSend channel: '#ma-multi-microservices-alerts', //update and provide your channel name
+        slackSend channel: '#cn1-microservice-alerts', //update and provide your channel name
         color: COLOR_MAP[currentBuild.currentResult],
         message: "*${currentBuild.currentResult}:* Job Name '${env.JOB_NAME}' build ${env.BUILD_NUMBER} \n Build Timestamp: ${env.BUILD_TIMESTAMP} \n Project Workspace: ${env.WORKSPACE} \n More info at: ${env.BUILD_URL}"
     }
