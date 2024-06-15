@@ -16,18 +16,18 @@ pipeline {
         // Checkout To The Service Branch
         stage('Checkout To Mcroservice Branch'){
             steps{
-                git branch: 'app-shipping-service', url: 'https://github.com/awanmbandi/realworld-microservice-project.git'
+                git branch: 'app-shipping-service', url: 'https://github.com/Harisnefo/realworld-microservice-project.git'
             }
         }
-        // SonarQube SAST Code Analysis
-        stage("SonarQube SAST Analysis"){
-            steps{
-                withSonarQubeEnv('Sonar-Server') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=app-shipping-service \
-                    -Dsonar.projectKey=app-shipping-service '''
-                }
-            }
-        }
+        // // SonarQube SAST Code Analysis
+        // stage("SonarQube SAST Analysis"){
+        //     steps{
+        //         withSonarQubeEnv('Sonar-Server') {
+        //             sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=app-shipping-service \
+        //             -Dsonar.projectKey=app-shipping-service '''
+        //         }
+        //     }
+        // }
         // Providing Snyk Access
         stage('Authenticate & Authorize Snyk') {
             steps {
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'DockerHub-Credential', toolName: 'docker') {
-                        sh "docker build -t awanmbandi/shippingservice:latest ."
+                        sh "docker build -t neftfox/shippingservice:latest ."
                     }
                 }
             }
@@ -59,15 +59,15 @@ pipeline {
             }
         }
         // Push Service Image to DockerHub
-        stage('Push Microservice Docker Image') {
-            steps {
-                script {
-                    withDockerRegistry(credentialsId: 'DockerHub-Credential', toolName: 'docker') {
-                        sh "docker push awanmbandi/shippingservice:latest "
-                    }
-                }
-            }
-        }
+        // stage('Push Microservice Docker Image') {
+        //     steps {
+        //         script {
+        //             withDockerRegistry(credentialsId: 'DockerHub-Credential', toolName: 'docker') {
+        //                 sh "docker push neftfox/shippingservice:latest "
+        //             }
+        //         }
+        //     }
+        // }
         // // Deploy to The Staging/Test Environment
         // stage('Deploy Microservice To The Stage/Test Env'){
         //     steps{
@@ -102,7 +102,7 @@ pipeline {
     post {
     always {
         echo 'Slack Notifications.'
-        slackSend channel: '#ma-multi-microservices-alerts', //update and provide your channel name
+        slackSend channel: '#cn1-microservice-alerts', //update and provide your channel name
         color: COLOR_MAP[currentBuild.currentResult],
         message: "*${currentBuild.currentResult}:* Job Name '${env.JOB_NAME}' build ${env.BUILD_NUMBER} \n Build Timestamp: ${env.BUILD_TIMESTAMP} \n Project Workspace: ${env.WORKSPACE} \n More info at: ${env.BUILD_URL}"
     }
